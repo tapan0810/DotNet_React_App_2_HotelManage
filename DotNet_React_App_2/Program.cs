@@ -1,5 +1,7 @@
 using DotNet_React_App_2.Data;
+using DotNet_React_App_2.Services;
 using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,12 +14,17 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<HotelDbContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("Con")));
 
+builder.Services.AddScoped<IHotelService, HotelService>();
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.MapScalarApiReference();
 }
 
 app.UseHttpsRedirection();
